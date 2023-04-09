@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PongGPT</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Ball Variables
+        let ballX = canvas.width / 2;
+        let ballY = canvas.height / 2;
+        let ballSpeedX = 5;
+        let ballSpeedY = 5;
+
+        // Paddle Variables
+        const paddleHeight = 100;
+        const paddleWidth = 10;
+        let paddle1Y = canvas.height / 2 - paddleHeight / 2;
+        let paddle2Y = canvas.height / 2 - paddleHeight / 2;
+
+        // Other Variables
+        const netWidth = 2;
+        const netHeight = 10;
+        let player1Score = 0;
+        let player2Score = 0;
+        const winningScore = 3;
+
+        function drawNet() {
+            for (let i = 0; i <= canvas.height; i += 15) {
+                ctx.fillStyle = 'white';
+                ctx.fillRect(canvas.width / 2 - netWidth / 2, i, netWidth, netHeight);
+            }
+        }
+
+        function drawPaddle(x, y, width, height, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, width, height);
+        }
+
+        function drawBall() {
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(ballX, ballY, 10, 0, Math.PI * 2, true);
+            ctx.fill();
+        }
+
+        function resetBall() {
+            if (player1Score === winningScore || player2Score === winningScore) {
+                player1Score = 0;
+                player2Score = 0;
+            }
+            ballSpeedX = -ballSpeedX;
+            ballX = canvas.width / 2;
+            ballY = canvas.height / 2;
+        }
+
+        function moveBall() {
+            ballX += ballSpeedX;
+            ballY += ballSpeedY;
+
+            if (ballX < 0) {
+                player2Score++;
+                resetBall();
+            }
+            if (ballX > canvas.width) {
+                player1Score++;
+                resetBall();
+            }
+            if (ballY < 0 || ballY > canvas.height) {
+                ballSpeedY = -ballSpeedY;
+            }
+            if (ballX < paddleWidth) {
+                if (ballY > paddle1Y && ballY < paddle1Y + paddleHeight) {
+                    ballSpeedX = -ballSpeedX;
+                    let deltaY = ballY - (paddle1Y + paddleHeight / 2);
+                    ballSpeedY = deltaY * 0.35;
+                } else {
+                    resetBall();
+                }
+            }
+            if (ballX > canvas.width - paddleWidth) {
+                if (ballY > paddle2Y && ballY < paddle2Y + paddleHeight) {
+                    ballSpeedX = -ballSpeedX;
+                    let deltaY = ballY - (paddle2Y + paddleHeight / 2);
+                    ballSpeedY = deltaY * 0.35;
+                } else {
+                    resetBall();
+                }
+            }
+        }
+
+function movePaddle(evt) {
+    let rect = canvas.getBoundingClientRect();
+    let mouseY = evt.clientY - rect.top - paddleHeight / 2;
+
+    if (mouseY >= 0 && mouseY <= canvas.height - paddleHeight) {
+        paddleY = mouseY;
+    }
+}
+
+function drawBall() {
+    ctx.beginPath();
+    ctx.arc(ballX, ballY, ballRadius, 0, Math.PI*2);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+    ctx.closePath();
+}
+
+function drawPaddle() {
+    ctx.beginPath();
+    ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+    ctx.closePath();
+}
+
+function draw() {
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw the ball
+    drawBall();
+
+    // Draw the paddle
+    drawPaddle();
+
+    // Update the ball position
+
+    // Check for collision with the walls
+
+    // Check for collision with the paddle
+
+    // Check for game over
+
+    // Request the next frame
+    requestAnimationFrame(draw);
+}
+
+// Start the game loop
+draw();
